@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Immersion</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <h1>Immersion</h1>
+      <span class="pair" id="pair">German → English</span>
+    </div>
+    <label class="switch" title="Immersion mode (Alt+Shift+I)">
+      <input type="checkbox" id="enabled" role="switch">
+      <span class="track" aria-hidden="true"><span class="thumb"></span></span>
+      <span class="switch-label" id="enabled-label">On</span>
+    </label>
+    <button class="icon-btn" id="settings-btn" aria-expanded="false" aria-controls="settings" title="Settings">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 12.6a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2Z"/><path d="M16.2 12.3l1.2.9-1.6 2.8-1.4-.6a6 6 0 0 1-1.8 1l-.2 1.5H8.2l-.2-1.5a6 6 0 0 1-1.8-1l-1.4.6L3.2 13.2l1.2-.9a6 6 0 0 1 0-2.1L3.2 9.3 4.8 6.5l1.4.6a6 6 0 0 1 1.8-1l.2-1.5h3.2l.2 1.5a6 6 0 0 1 1.8 1l1.4-.6 1.6 2.8-1.2.9a6 6 0 0 1 0 2.1Z"/></svg>
+    </button>
+  </header>
+
+  <section class="settings" id="settings" hidden>
+    <fieldset>
+      <legend>Definitions</legend>
+      <label class="radio">
+        <input type="radio" name="provider" value="wiktionary">
+        <span><b>Wiktionary</b><small>Free, no setup. Same meaning in every context.</small></span>
+      </label>
+      <label class="radio">
+        <input type="radio" name="provider" value="claude">
+        <span><b>Claude</b><small>Reads the sentence to pick the right meaning. Uses your Anthropic API key.</small></span>
+      </label>
+      <div class="claude-fields" id="claude-fields">
+        <label class="field">
+          <span>API key</span>
+          <input type="password" id="api-key" autocomplete="off" spellcheck="false" placeholder="sk-ant-…">
+        </label>
+        <label class="field">
+          <span>Model</span>
+          <input type="text" id="model" spellcheck="false">
+        </label>
+        <p class="note">Your key stays in this browser. The clicked word and its sentence are sent to Anthropic.</p>
+      </div>
+    </fieldset>
+    <p class="note">Shortcut to turn immersion mode on or off: <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>.
+      <button class="link" id="shortcuts">Change</button></p>
+  </section>
+
+  <div class="search">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
+    <input type="search" id="search" placeholder="Search words or meanings" aria-label="Search vocabulary">
+    <span class="count" id="count"></span>
+  </div>
+
+  <main id="list" aria-live="polite"></main>
+
+  <template id="empty-tpl">
+    <div class="empty">
+      <p class="empty-title">No saved words yet</p>
+      <p>Open any German page and click a word to see what it means. Click it again to save it here.</p>
+    </div>
+  </template>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

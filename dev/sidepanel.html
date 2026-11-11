@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Side panel harness</title>
+  <link rel="stylesheet" href="../src/sidepanel/sidepanel.css">
+  <style>html { max-width: 380px; border-right: 1px solid #8884; min-height: 100vh; }</style>
+</head>
+<body>
+<script type="module">
+  // Dev-only: renders the real side panel with sample data and a chrome.* stand-in.
+  import { emptyState, removeLexeme, saveOccurrence } from '../src/shared/vocab-model.js';
+
+  const html = await (await fetch('../src/sidepanel/sidepanel.html')).text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelector('script')?.remove();
+  document.body.innerHTML = doc.body.innerHTML;
+
+  const r = (word, headword, translation, lemma, lemmaGloss, grammar, pos) =>
+    ({ found: true, word, headword, lang: 'de', targetLang: 'en', translation, lemma, lemmaGloss, grammar, partOfSpeech: pos, provider: 'wiktionary' });
+  const vocab = emptyState();
+  let t = Date.now() - 3 * 86400e3, n = 0;
+  const add = (res, sentence, url, title) => saveOccurrence(vocab, { result: res, sentence, url, title }, (t += 3600e3 * 7), () => `o${++n}`);
+  add(r('Häuser', 'Häuser', 'house, building', 'Haus', 'house, building', 'Nominative/accusative/genitive plural', 'Noun'), 'Die Häuser in der Straße standen leer.', 'https://www.zeit.de/kultur/2026-11/stadt', 'Zeit');
+  add(r('ging', 'ging', 'to go, to walk', 'gehen', 'to go, to walk', 'First/third-person singular preterite', 'Verb'), 'Niemand ging mehr hinein.', 'https://www.spiegel.de/panorama/a-123', 'Spiegel');
+  add(r('vernachlässigt', 'vernachlässigt', 'neglected, unattended', 'vernachlässigen', 'to neglect', 'Past participle', 'Adjective'), 'Der Garten wurde jahrelang vernachlässigt.', 'https://www.sueddeutsche.de/garten', 'SZ');
+  add(r('vernachlässigt', 'vernachlässigt', 'neglected, unattended', 'vernachlässigen', 'to neglect', 'Past participle', 'Adjective'), 'Die Schulen wurden vom Staat vernachlässigt.', 'https://www.tagesschau.de/inland/bildung', 'Tagesschau');
+
+  const store = { vocab, settings: { enabled: true, pairId: 'de-en', provider: 'wiktionary', claudeApiKey: '', claudeModel: 'claude-opus-5-5' } };
+  const listeners = [];
+  const set = (patch) => { const c = {}; for (const [k, v] of Object.entries(patch)) { c[k] = { newValue: structuredClone(v) }; store[k] = v; } listeners.forEach((l) => l(c, 'local')); };
+  globalThis.chrome = {
+    storage: { local: { get: async (k) => ({ [k]: structuredClone(store[k]) }), set: async (p) => set(p) }, onChanged: { addListener: (f) => listeners.push(f) } },
+    runtime: { sendMessage: async (m) => { if (m.type === 'remove-lexeme') { const s = structuredClone(store.vocab); removeLexeme(s, m.lexemeId); set({ vocab: s }); } return { ok: true }; } },
+    tabs: { create: () => {} },
+  };
+  await import('../src/sidepanel/sidepanel.js');
+</script>
+</body>
+</html>

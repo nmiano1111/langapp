@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Immersion harness</title>
+  <style>
+    body { font: 18px/1.6 Georgia, serif; max-width: 680px; margin: 40px auto; padding: 0 16px; color: #222; }
+    .clickable-card { cursor: pointer; padding: 8px; border: 1px dashed #ccc; }
+    .scroller { height: 120px; overflow: auto; border: 1px solid #ddd; padding: 8px; }
+    #log { font: 12px ui-monospace, monospace; white-space: pre-wrap; background: #f5f5f5; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Der vernachlässigte Garten</h1>
+  <p id="p1">Der Garten wurde jahrelang <b>vernachlässigt</b>. Die Häuser in der Straße standen leer, und niemand ging mehr hinein.</p>
+  <p id="p2">Er lief <a href="#link">schnell</a> nach Hause. <button>Knopf</button> <input value="Eingabe"></p>
+  <div class="clickable-card" id="card">Diese Karte hat einen Klick-Handler.</div>
+  <p lang="en" id="english">This paragraph is declared as English and should be ignored.</p>
+  <div class="scroller"><p>Im Sommer blühen die Rosen wieder. Die Kinder spielen draußen.</p><p>Noch mehr Text zum Scrollen.</p><p>Und noch ein Satz.</p></div>
+  <p contenteditable="true" id="editable">Bearbeitbarer Text bleibt unberührt.</p>
+  <h3>Log</h3>
+  <div id="log"></div>
+  <script type="module" src="chrome-shim.js"></script>
+</body>
+</html>
